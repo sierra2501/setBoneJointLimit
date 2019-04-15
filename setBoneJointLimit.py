@@ -1,49 +1,40 @@
 import json
 from collections import OrderedDict
 
-BONE_OBJ = "{"
 
-FILE_DIR = ""
-USER_NAME = "sierra"
-FILE_NAME = "file.json"
+# ============================ SET用 ========================================
+# アクティブのボーンが"d"の中にあれば制限値を設定、なければスキップ
+def setLimit(bone_name, bone_dict):
 
-FLAG = "GET" # or GET
+    if bone_name in bone_dict:
+        xshade.scene().active_shape().bone_joint.set_limit(0, [bone_dict[bone_name]['X']['min']/180.0, bone_dict[bone_name]['X']['max']/180.0])
+        xshade.scene().active_shape().bone_joint.set_limit(1, [bone_dict[bone_name]['Y']['min']/180.0, bone_dict[bone_name]['Y']['max']/180.0])
+        xshade.scene().active_shape().bone_joint.set_limit(2, [bone_dict[bone_name]['Z']['min']/180.0, bone_dict[bone_name]['Z']['max']/180.0])
+    else: 
+        print 'Skip : ' + bone_name
+
 
 # ============================ GET用 ========================================
 # アクティブのボーンの制限値を追記
-def stockStr():
-    global BONE_OBJ
+def getLimit(bone_dict):
+
     rom_x = xshade.scene().active_shape().bone_joint.get_limit(0) 
     rom_y = xshade.scene().active_shape().bone_joint.get_limit(1)
     rom_z = xshade.scene().active_shape().bone_joint.get_limit(2)
     bone_name = xshade.scene().active_shape().name
     
-    BONE_OBJ = BONE_OBJ + r'"%s": {"X": {"min": %f, "max": %f}, "Y": {"min": %f, "max": %f}, "Z": {"min": %f, "max": %f}},' % (bone_name, rom_x[0]*180, rom_x[1]*180, rom_y[0]*180, rom_y[1]*180, rom_z[0]*180, rom_z[1]*180)
+    return bone_dict + r'"%s": {"X": {"min": %f, "max": %f}, "Y": {"min": %f, "max": %f}, "Z": {"min": %f, "max": %f}},' % (bone_name, rom_x[0]*180, rom_x[1]*180, rom_y[0]*180, rom_y[1]*180, rom_z[0]*180, rom_z[1]*180)
 
+
+# ===========================================================================
 # jsonファイルに保存
-def saveJson():
+def saveJson(bone_dict, file_dir):
 
-    global BONE_OBJ
-    global FILE_DIR
+    bone_dict = bone_dict[:-1] + "}"
 
-    BONE_OBJ = BONE_OBJ[:-1] + "}"
-
-    d  = json.loads(BONE_OBJ, object_pairs_hook=OrderedDict)
-    with open(FILE_DIR, 'w') as f:
+    d  = json.loads(bone_dict, object_pairs_hook=OrderedDict)
+    with open(file_dir, 'w') as f:
       json.dump(d, f, indent=2,encoding='utf-8')
-
-
-# ============================ SET用 ========================================
-# アクティブのボーンが"d"の中にあれば制限値を設定、なければスキップ
-def setLimit(bone_name, d):
-
-
-    if bone_name in d:
-        xshade.scene().active_shape().bone_joint.set_limit(0, [d[bone_name]['X']['min']/180.0, d[bone_name]['X']['max']/180.0])
-        xshade.scene().active_shape().bone_joint.set_limit(1, [d[bone_name]['Y']['min']/180.0, d[bone_name]['Y']['max']/180.0])
-        xshade.scene().active_shape().bone_joint.set_limit(2, [d[bone_name]['Z']['min']/180.0, d[bone_name]['Z']['max']/180.0])
-    else: 
-        print 'Skip : ' + bone_name
 
 
 # ===========================================================================
@@ -73,33 +64,47 @@ def risingNode(name):
 # ===========================================================================
 def main():
     
-    global FLAG
-    global BONE_OBJ
-    global FILE_DIR
+    mode = "GET" # SET or GET
 
+    # ファイル・ディレクトリ
+    file_dir = 'C:\\Users\\sierra\\Documents\\file.json'
 
-    FILE_DIR = 'C:\\Users\\' + USER_NAME + "\\Documents\\" + FILE_NAME
-
-    if FLAG == "SET":
-        d = json.load(open(FILE_DIR, 'r'))
+    # 辞書の作成
+    if mode == "SET":
+        bone_dict = json.load(open(file_dir, 'r'))
+    elif mode == "GET":
+        bone_dict = "{"
 
     # 初期設定
     root_name = xshade.scene().active_shape().name
     root_flag = False
 
+    # 末端を選択した
+    if xshade.scene().active_shape().son.bro.name == "Sentinel":
+        if mode == "SET":
+            setLimit(xshade.scene().active_shape().name, bone_dict)
+        elif mode == "GET":
+            bone_dict = getLimit(bone_dict)
+        root_flag = True
+
     while(1):
 
         # rootまで戻った
         if root_flag == True:
+
+            # 保存
+            if mode == "GET":
+                saveJson(bone_dict, file_dir)
+
             print "END"
             break
         else:
-            if FLAG == "SET":
-                setLimit(xshade.scene().active_shape().name, d)
-            elif FLAG == "GET":
-                stockStr()
+            if mode == "SET":
+                setLimit(xshade.scene().active_shape().name, bone_dict)
+            elif mode == "GET":
+                bone_dict = getLimit(bone_dict)
 
-        # 番兵まで到達したら浮上する
+        # 番兵まで到達したら浮上するi
         if xshade.scene().active_shape().son.bro.name == "Sentinel":
             root_flag = risingNode(root_name)
 
@@ -107,7 +112,5 @@ def main():
         else:
             xshade.scene().active_shape().son.bro.select()
     
-    if FLAG == "GET":
-        saveJson()
 
 main()
