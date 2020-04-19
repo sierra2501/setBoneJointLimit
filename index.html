@@ -19,6 +19,15 @@
         
         window.external.setScript(py_src);
     }
+
+    function do_script_m () {
+
+        // 外部ファイルのPythonコードを読み込み.
+        py_src_m = readFileToString('py/mirrorBoneJointLimit.py');
+
+        window.external.setScript(py_src_m);
+
+    }
     </script>
 
 </head>
@@ -28,18 +37,20 @@
     <div id="sh-wd-wrapper">
 
         <div id="sh-wd-header">
-            <h3>テスト</h3>
+            <h3>ボーンの回転角制限の設定と保存</h3>
         </div>
 
         <div id="sh-wd-main">
             <form id="sh-wd-form">
-                <input type="button" value="実行する" onclick="do_script('SET');" />
-                <input type="button" value="実行する" onclick="do_script('GET');" />
+                <div>
+                    <input type="button" id="mode_set" form="sh-wd-form" value="設定する" onclick="do_script('SET');" />
+                    <input type="button" id="mode_get" form="sh-wd-form" value="保存する" onclick="do_script('GET');" />
+                </div>
+                <div class="sh-wd-tp">
+                    <h6>左右反転したJSONファイルの作成</h6>
+                    <input type="button" id="mode_get" form="sh-wd-form" value="作成する" onclick="do_script_m();" />
+                </div>
             </form>
-            <div id ="sh-wd-result">
-                <p><span id = "result"></span></p>
-            </div>
-            
         </div>
 
         <div id="sh-wd-footer">
