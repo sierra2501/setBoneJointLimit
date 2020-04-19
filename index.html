@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/gannet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/readExternalFile.js"></script>
+
+    <script type="text/javascript">
+
+    function do_script () {
+
+        // 外部ファイルのPythonコードを読み込み.
+        py_src = readFileToString('py/test1.py');
+
+        py_result.innerHTML = window.external.setScript(py_src);
+    }
+    </script>
+
+</head>
+
+<body>
+
+    <div id="sh-wd-wrapper">
+
+        <div id="sh-wd-header">
+            <h3>テスト</h3>
+        </div>
+
+        <div id="sh-wd-main">
+            <form id="sh-wd-form">
+                <input type="button" value="実行する" onclick="do_script();" />
+            </form>
+            <div id ="sh-wd-result">
+                <p><span id = "result"></span></p>
+            </div>
+            
+        </div>
+
+        <div id="sh-wd-footer">
+            <p>@sierra2501</p>
+        </div>
+    </div>
+    
+
+</body>
+</html>
