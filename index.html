@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/gannet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/readExternalFile.js"></script>
+
+    <script type="text/javascript">
+
+    function do_script (mode) {
+
+        // 外部ファイルのPythonコードを読み込み.
+        py_src = readFileToString('py/setBoneJointLimit.py');
+
+        py_src = py_src.replace("TARGET_MODE", "\"" + mode + "\"");
+        
+        window.external.setScript(py_src);
+    }
+
+    function do_script_m () {
+
+        // 外部ファイルのPythonコードを読み込み.
+        py_src_m = readFileToString('py/mirrorBoneJointLimit.py');
+
+        window.external.setScript(py_src_m);
+
+    }
+    </script>
+
+</head>
+
+<body>
+
+    <div id="sh-wd-wrapper">
+
+        <div id="sh-wd-header">
+            <h3>ボーンの回転角制限の設定と保存</h3>
+        </div>
+
+        <div id="sh-wd-main">
+            <form id="sh-wd-form">
+                <div>
+                    <input type="button" id="mode_set" form="sh-wd-form" value="設定する" onclick="do_script('SET');" />
+                    <input type="button" id="mode_get" form="sh-wd-form" value="保存する" onclick="do_script('GET');" />
+                </div>
+                <div class="sh-wd-tp">
+                    <h6>左右反転したJSONファイルの作成</h6>
+                    <input type="button" id="mode_get" form="sh-wd-form" value="作成する" onclick="do_script_m();" />
+                </div>
+            </form>
+        </div>
+
+        <div id="sh-wd-footer">
+            <p>@sierra2501</p>
+        </div>
+    </div>
+    
+
+</body>
+</html>
