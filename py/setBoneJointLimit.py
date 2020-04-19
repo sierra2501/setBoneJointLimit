@@ -28,13 +28,18 @@ def getLimit(bone_dict):
 
 # ===========================================================================
 # jsonファイルに保存
-def saveJson(bone_dict, file_dir):
+def saveJson(bone_dict):
 
     bone_dict = bone_dict[:-1] + "}"
 
+    dialog = xshade.create_dialog()
+    file_dir = dialog.ask_path(False, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+
+    if file_dir == None:
+        file_dir = ""
     d  = json.loads(bone_dict, object_pairs_hook=OrderedDict)
     with open(file_dir, 'w') as f:
-      json.dump(d, f, indent=2,encoding='utf-8')
+        json.dump(d, f, indent=2,encoding='utf-8')
 
 
 # ===========================================================================
@@ -64,10 +69,14 @@ def risingNode(name):
 # ===========================================================================
 def main():
     
-    mode = "GET" # SET or GET
+    mode = TARGET_MODE # SET or GET
 
     # ファイル・ディレクトリ
-    file_dir = 'C:\\Users\\sierra\\Documents\\file.json'
+    if mode == "SET":
+        dialog = xshade.create_dialog()
+        file_dir = dialog.ask_path(True, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+        if file_dir == "":
+            return
 
     # 辞書の作成
     if mode == "SET":
@@ -94,7 +103,7 @@ def main():
 
             # 保存
             if mode == "GET":
-                saveJson(bone_dict, file_dir)
+                saveJson(bone_dict)
 
             print "END"
             break
