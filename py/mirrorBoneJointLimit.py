@@ -13,12 +13,12 @@ def mirrorLimit(bone_dict):
 
 # ===========================================================================
 # jsonファイルに保存
-def saveJson(bone_dict, file_dir):
+def saveJson(bone_dict):
 
     bone_dict = bone_dict[:-1] + "}"
 
     dialog = xshade.create_dialog()
-    file_dir = dialog.ask_path(False, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+    file_dir = str(dialog.ask_path(False, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")).decode('utf-8')
     
     d  = json.loads(bone_dict, object_pairs_hook=OrderedDict)
     with open(file_dir, 'w') as f:
@@ -28,10 +28,9 @@ def main():
 
     # ファイル・ディレクトリ
     dialog = xshade.create_dialog()
-    file_dir = dialog.ask_path(True, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+    file_dir = str(dialog.ask_path(True, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")).decode('utf-8')
     if file_dir == "":
         return
-    new_file_dir = 'C:\\Users\\sierra\\Documents\\new_file.json'
 
     # 辞書の作成
     bone_dict = json.load(open(file_dir, 'r'))
@@ -40,7 +39,7 @@ def main():
     new_bone_dict = mirrorLimit(bone_dict)
 
     # 保存
-    saveJson(new_bone_dict, new_file_dir)
+    saveJson(new_bone_dict)
 
     print("END")
 

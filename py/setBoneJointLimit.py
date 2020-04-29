@@ -33,7 +33,7 @@ def saveJson(bone_dict):
     bone_dict = bone_dict[:-1] + "}"
 
     dialog = xshade.create_dialog()
-    file_dir = dialog.ask_path(False, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+    file_dir = str(dialog.ask_path(False, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")).decode('utf-8')
 
     if file_dir == None:
         file_dir = ""
@@ -74,7 +74,7 @@ def main():
     # ファイル・ディレクトリ
     if mode == "SET":
         dialog = xshade.create_dialog()
-        file_dir = dialog.ask_path(True, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")
+        file_dir = str(dialog.ask_path(True, "JSON/TEXT(.json .txt)|json;txt|JSON(.json)|json|TEXT(.txt)|txt")).decode('utf-8')
         if file_dir == "":
             return
 
